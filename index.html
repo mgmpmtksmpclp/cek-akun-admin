@@ -7,9 +7,16 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+        /* Mengimpor Inter untuk teks umum dan JetBrains Mono untuk Username/Password agar lebih jelas */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@700;800&display=swap');
+        
         body {
             font-family: 'Inter', sans-serif;
+        }
+
+        .font-data {
+            font-family: 'JetBrains Mono', monospace;
+            letter-spacing: 0.05em;
         }
     </style>
 </head>
@@ -27,10 +34,9 @@
                 <!-- Form Input -->
                 <div class="space-y-4">
                     <div>
-                        <label for="npsnInput" class="block text-sm font-semibold text-slate-700 mb-1">Nomor Pokok Sekolah Nasional (NPSN)</label>
                         <input type="text" id="npsnInput" 
-                            placeholder="Contoh: 2021XXXX" 
-                            class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all text-center text-lg font-mono tracking-widest">
+                            placeholder="Ketik NPSN di sini..." 
+                            class="w-full px-4 py-4 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all text-center text-lg font-data tracking-widest bg-slate-50 shadow-inner">
                     </div>
                     
                     <button onclick="checkNPSN()" id="btnCheck" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl transition-all shadow-lg shadow-blue-200 flex items-center justify-center">
@@ -41,32 +47,56 @@
 
                 <!-- Area Hasil -->
                 <div id="resultArea" class="hidden mt-8 pt-6 border-t border-slate-100 animate-fade-in">
+                    <!-- Nama Sekolah -->
                     <div class="bg-emerald-50 border border-emerald-100 rounded-xl p-4 mb-4">
                         <p class="text-xs text-emerald-600 font-bold uppercase tracking-wider mb-1">Nama Sekolah</p>
                         <p id="resNama" class="text-slate-800 font-bold text-lg leading-tight"></p>
                     </div>
 
                     <div class="grid grid-cols-1 gap-3">
+                        <!-- Username -->
                         <div class="bg-slate-50 rounded-xl p-5 border border-slate-100 relative group">
                             <p class="text-xs text-slate-500 font-semibold mb-1 uppercase tracking-wide">Username</p>
-                            <!-- Ukuran font diperbesar menjadi text-3xl -->
-                            <p id="resUser" class="text-blue-600 font-mono text-3xl font-extrabold tracking-wider"></p>
-                            <button onclick="copyText('resUser')" class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-blue-600 p-2 bg-white rounded-lg shadow-sm border border-slate-100 transition-all">
+                            <p id="resUser" class="text-blue-700 font-data text-3xl font-extrabold"></p>
+                            <button onclick="copyText('resUser')" class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-blue-600 p-2 bg-white rounded-lg shadow-sm border border-slate-100 transition-all active:scale-95">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2" />
                                 </svg>
                             </button>
                         </div>
+                        
+                        <!-- Password -->
                         <div class="bg-slate-50 rounded-xl p-5 border border-slate-100">
                             <p class="text-xs text-slate-500 font-semibold mb-1 uppercase tracking-wide">Password</p>
-                            <!-- Ukuran font diperbesar menjadi text-3xl -->
-                            <p id="resPass" class="text-slate-700 font-mono text-3xl font-extrabold tracking-wider"></p>
+                            <p id="resPass" class="text-slate-800 font-data text-3xl font-extrabold"></p>
+                        </div>
+
+                        <!-- Tautan File (Dinamis dari Spreadsheet) -->
+                        <div id="tautanContainer" class="bg-blue-50 rounded-xl p-4 border border-blue-100">
+                            <p class="text-xs text-blue-500 font-semibold mb-2 uppercase tracking-wide">Tautan File</p>
+                            <a id="resTautan" href="#" target="_blank" class="flex items-center justify-between w-full bg-white px-4 py-3 rounded-lg border border-blue-200 text-blue-700 font-bold hover:bg-blue-600 hover:text-white transition-all group">
+                                <span class="truncate pr-4 font-semibold">Buka Tautan</span>
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                                </svg>
+                            </a>
+                        </div>
+
+                        <!-- Portal Admin (Statik) -->
+                        <div class="bg-orange-50 rounded-xl p-4 border border-orange-100">
+                            <p class="text-xs text-orange-600 font-semibold mb-2 uppercase tracking-wide">Portal Admin</p>
+                            <a href="https://portal.asesmen.web.id" target="_blank" class="flex items-center justify-between w-full bg-white px-4 py-3 rounded-lg border border-orange-200 text-orange-700 font-bold hover:bg-orange-600 hover:text-white transition-all group">
+                                <span class="truncate pr-4 font-semibold">Buka Portal Admin</span>
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                                </svg>
+                            </a>
                         </div>
                     </div>
                 </div>
 
                 <!-- Pesan Error -->
-                <div id="errorArea" class="hidden mt-4 p-4 bg-red-50 border border-red-100 text-red-600 rounded-xl text-sm text-center">
+                <div id="errorArea" class="hidden mt-4 p-4 bg-red-50 border border-red-100 text-red-600 rounded-xl text-sm text-center font-medium">
                     Maaf, NPSN tidak ditemukan dalam database.
                 </div>
             </div>
@@ -78,7 +108,7 @@
     </div>
 
     <!-- Toast Notification -->
-    <div id="toast" class="fixed bottom-8 left-1/2 -translate-x-1/2 bg-slate-800 text-white px-6 py-2 rounded-full text-sm shadow-2xl opacity-0 transition-opacity duration-300 pointer-events-none">
+    <div id="toast" class="fixed bottom-8 left-1/2 -translate-x-1/2 bg-slate-800 text-white px-6 py-2 rounded-full text-sm shadow-2xl opacity-0 transition-opacity duration-300 pointer-events-none z-50">
         Username berhasil disalin!
     </div>
 
@@ -121,9 +151,21 @@
                 btnText.innerText = 'Lihat Data Akun';
 
                 if (school) {
+                    const tautanVal = school.Tautan || school.TAUTAN || "";
+                    
                     document.getElementById('resNama').innerText = school.Sekolah || school.SEKOLAH || 'N/A';
                     document.getElementById('resUser').innerText = school.Kode || school.KODE || 'N/A';
                     document.getElementById('resPass').innerText = inputVal;
+                    
+                    const linkEl = document.getElementById('resTautan');
+                    const linkContainer = document.getElementById('tautanContainer');
+                    if (tautanVal && tautanVal !== "") {
+                        linkEl.href = tautanVal.startsWith('http') ? tautanVal : `https://${tautanVal}`;
+                        linkContainer.classList.remove('hidden');
+                    } else {
+                        linkContainer.classList.add('hidden');
+                    }
+
                     resultArea.classList.remove('hidden');
                 } else {
                     errorArea.classList.remove('hidden');
